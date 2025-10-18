@@ -94,13 +94,30 @@
     }
   }
 
-  function applyDrafted(rows) {
-    if (!els.drafted) return rows;
-    const drafted = (els.drafted.value || "")
-      .split(",").map(s=>s.trim().toLowerCase()).filter(Boolean);
-    if (!drafted.length) return rows;
-    return rows.filter(r => !drafted.includes(r.player.toLowerCase()));
-  }
+ function normalizeName(s) {
+  return (s || "")
+    .toLowerCase()
+    .normalize("NFD")                 // split accents
+    .replace(/[\u0300-\u036f]/g, "") // remove accents
+    .replace(/\s+/g, " ")            // collapse spaces
+    .trim();
+}
+
+function applyDrafted(rows) {
+  if (!els.drafted) return rows;
+
+  // support commas OR newlines
+  const raw = (els.drafted.value || "")
+    .split(/,|\n/).map(s => s.trim()).filter(Boolean);
+
+  // normalize all drafted names once
+  const draftedSet = new Set(raw.map(normalizeName));
+
+  if (!draftedSet.size) return rows;
+
+  return rows.filter(r => !draftedSet.has(normalizeName(r.player)));
+}
+
 
   function computeTotals(rows) {
     const w = getWeights();
