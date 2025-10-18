@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fantasy Basketball Draft Tool</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Fantasy Basketball Draft Tool</h1>
+    <p>Best Player Available with VORP, tiers, and next-pick availability — all client-side.</p>
+  </header>
+
+  <section class="controls">
+    <details open>
+      <summary>League Settings</summary>
+      <div class="grid">
+        <label>League Type
+          <select id="leagueType">
+            <option value="points">Points</option>
+            <option value="9cat">9-Category</option>
+          </select>
+        </label>
+        <label>Teams
+          <input type="number" id="teams" value="12" min="6" max="20" step="1">
+        </label>
+        <label>Your Draft Position (1-based)
+          <input type="number" id="draftPos" value="12" min="1" max="20" step="1">
+        </label>
+        <label>Total Rounds
+          <input type="number" id="rounds" value="13" min="8" max="20" step="1">
+        </label>
+      </div>
+
+      <div id="pointsWeights" class="grid">
+        <label>PTS <input type="number" id="wPTS" value="1.0" step="0.1"></label>
+        <label>REB <input type="number" id="wREB" value="1.2" step="0.1"></label>
+        <label>AST <input type="number" id="wAST" value="1.5" step="0.1"></label>
+        <label>STL <input type="number" id="wSTL" value="3.0" step="0.1"></label>
+        <label>BLK <input type="number" id="wBLK" value="3.0" step="0.1"></label>
+        <label>3PM <input type="number" id="w3PM" value="3.0" step="0.1"></label>
+        <label>TOV (penalty) <input type="number" id="wTOV" value="1.0" step="0.1"></label>
+      </div>
+
+      <div id="nineCat" class="grid" style="display:none">
+        <label>Punt (comma-separated, e.g., reb,tov)
+          <input type="text" id="puntCats" placeholder="">
+        </label>
+        <label>Volume-correct FG/FT
+          <select id="volCorr">
+            <option value="true" selected>True</option>
+            <option value="false">False</option>
+          </select>
+        </label>
+      </div>
+
+      <label class="block">Roster Rules (JSON)
+        <textarea id="rosterRules" rows="3">{ "PG":2,"SG":2,"SF":2,"PF":2,"C":2,"G":1,"F":1,"UTIL":2,"TEAMS":12 }</textarea>
+      </label>
+
+      <div class="grid">
+        <label>Current Round
+          <input type="number" id="currentRound" value="1" min="1" step="1">
+        </label>
+        <label>ADP volatility (+/- picks)
+          <input type="number" id="sigma" value="8" min="3" max="15" step="0.5">
+        </label>
+      </div>
+    </details>
+
+    <details>
+      <summary>Data</summary>
+      <p>Using <code>data/projections.csv</code> from the repo by default. You can replace it with your own file (same columns) or drop a CSV here:</p>
+      <input type="file" id="csvFile" accept=".csv">
+    </details>
+
+    <details open>
+      <summary>Drafted Players</summary>
+      <textarea id="drafted" rows="3" placeholder="Type names separated by commas"></textarea>
+    </details>
+
+    <button id="recompute">Recompute Board</button>
+  </section>
+
+  <main class="tables">
+    <section>
+      <h2>Recommended Picks</h2>
+      <div id="board"></div>
+    </section>
+
+    <section>
+      <h2>Reach vs. Wait — Availability at Your Next Pick</h2>
+      <div id="avail"></div>
+    </section>
+
+    <section>
+      <h2>Data Preview</h2>
+      <div id="preview"></div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Tip: push this folder to GitHub and enable Pages. Edit <code>data/projections.csv</code> to use your own projections/ADP.</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
